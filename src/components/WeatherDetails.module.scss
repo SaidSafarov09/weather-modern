@@ -1,0 +1,91 @@
+.weatherDetails {
+    animation: fadeIn 0.5s ease-out 0.3s backwards;
+}
+
+.sectionTitle {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+
+    svg {
+        color: var(--accent-blue);
+    }
+}
+
+.detailsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.detailCard {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all var(--transition-base);
+
+    &:hover {
+        transform: translateY(-2px) scale(1.02);
+
+        .detailIcon {
+            transform: scale(1.1) rotate(5deg);
+        }
+    }
+}
+
+.detailIcon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+    transition: all var(--transition-base);
+}
+
+.detailContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detailLabel {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detailValue {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+    .detailsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .detailCard {
+        padding: 16px;
+    }
+
+    .detailIcon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .detailValue {
+        font-size: 18px;
+    }
+}

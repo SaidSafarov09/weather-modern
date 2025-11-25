@@ -1,0 +1,164 @@
+.weeklyForecast {
+    padding: 24px;
+    margin-bottom: 24px;
+    animation: fadeIn 0.5s ease-out 0.2s backwards;
+}
+
+.sectionTitle {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+
+    svg {
+        color: var(--accent-blue);
+    }
+}
+
+.weeklyList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.weeklyItem {
+    display: grid;
+    grid-template-columns: 80px 1fr 200px;
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all var(--transition-base);
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(4px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.dayInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dayName {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.dayDate {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.dayWeather {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dayIcon {
+    width: 50px;
+    height: 50px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.dayDescription {
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-transform: capitalize;
+}
+
+.dayTempRange {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.tempBarWrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.tempMin,
+.tempMax {
+    font-size: 16px;
+    font-weight: 600;
+    min-width: 40px;
+    text-align: center;
+}
+
+.tempMin {
+    color: var(--accent-blue);
+}
+
+.tempMax {
+    color: var(--accent-orange);
+}
+
+.tempBar {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+
+.tempBarFill {
+    height: 100%;
+    width: 100%;
+    border-radius: 3px;
+    animation: fillBar 0.8s ease-out;
+}
+
+@keyframes fillBar {
+    from {
+        transform: scaleX(0);
+        transform-origin: left;
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .weeklyForecast {
+        padding: 20px 16px;
+    }
+
+    .weeklyItem {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .dayInfo {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .dayWeather {
+        justify-content: center;
+    }
+
+    .dayTempRange {
+        justify-content: center;
+    }
+
+    .tempBarWrapper {
+        max-width: 280px;
+    }
+}
