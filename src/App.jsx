@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import weatherService from './services/WeatherService';
+import locationService from './services/LocationService';
 import SearchBar from './components/SearchBar';
 import CurrentWeather from './components/CurrentWeather';
 import HourlyForecast from './components/HourlyForecast';
@@ -54,22 +55,35 @@ function App() {
   };
 
   const handleLocationRequest = () => {
-    if (!navigator.geolocation) {
-      setError(ERROR_MESSAGES.GEOLOCATION_UNAVAILABLE);
-      return;
-    }
-
     setLoading(true);
     setError(null);
+
+    if (!navigator.geolocation) {
+      locationService.getIpLocation()
+        .then(location => {
+          loadWeather(location.lat, location.lon);
+        })
+        .catch(() => {
+          setError(ERROR_MESSAGES.GEOLOCATION_UNAVAILABLE);
+          setLoading(false);
+        });
+      return;
+    }
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
         loadWeather(position.coords.latitude, position.coords.longitude);
       },
       (err) => {
-        setError(ERROR_MESSAGES.GEOLOCATION_DENIED);
-        setLoading(false);
-        console.error('Geolocation error:', err);
+        console.log('Geolocation error, trying IP fallback:', err);
+        locationService.getIpLocation()
+          .then(location => {
+            loadWeather(location.lat, location.lon);
+          })
+          .catch(() => {
+            setError(ERROR_MESSAGES.GEOLOCATION_DENIED);
+            setLoading(false);
+          });
       },
       {
         enableHighAccuracy: true,
@@ -83,19 +97,36 @@ function App() {
     if (!initialLoad) return;
 
     const tryGeolocation = () => {
+      const handleSuccess = (position) => {
+        console.log('Geolocation success:', position.coords.latitude, position.coords.longitude);
+        loadWeather(position.coords.latitude, position.coords.longitude);
+        setInitialLoad(false);
+      };
+
+      const handleError = async (error) => {
+        console.log('Geolocation error:', error?.message, '- Trying IP fallback...');
+        try {
+          const location = await locationService.getIpLocation();
+          console.log('IP Location success:', location);
+          loadWeather(location.lat, location.lon);
+        } catch (ipError) {
+          console.log('IP Location failed:', ipError);
+          if (DEFAULT_LOCATION) {
+            console.log('Falling back to default location');
+            loadWeather(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lon);
+          } else {
+            setError('Не удалось определить местоположение. Пожалуйста, воспользуйтесь поиском.');
+          }
+        } finally {
+          setInitialLoad(false);
+        }
+      };
+
       if (navigator.geolocation) {
         console.log('Requesting geolocation...');
         navigator.geolocation.getCurrentPosition(
-          (position) => {
-            console.log('Geolocation success:', position.coords.latitude, position.coords.longitude);
-            loadWeather(position.coords.latitude, position.coords.longitude);
-            setInitialLoad(false);
-          },
-          (error) => {
-            console.log('Geolocation error:', error.message, 'Falling back to default location');
-            loadWeather(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lon);
-            setInitialLoad(false);
-          },
+          handleSuccess,
+          handleError,
           {
             enableHighAccuracy: false,
             timeout: 5000,
@@ -103,9 +134,7 @@ function App() {
           }
         );
       } else {
-        console.log('Geolocation not supported, using default location');
-        loadWeather(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lon);
-        setInitialLoad(false);
+        handleError(new Error('Geolocation not supported'));
       }
     };
 

@@ -12,11 +12,7 @@ export const WEEK_DAYS = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'
 
 export const WIND_DIRECTIONS = ['С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
 
-export const DEFAULT_LOCATION = {
-    lat: 55.7558,
-    lon: 37.6173,
-    name: 'Москва'
-};
+export const DEFAULT_LOCATION = null;
 
 export const API_CONFIG = {
     BASE_URL: 'https://api.openweathermap.org/data/2.5',
